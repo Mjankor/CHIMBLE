@@ -1,0 +1,68 @@
+// [[Rcpp::export]]
+NumericVector func_EddyDiffusion (double LakeIceThickness, double Windspeed, NumericMatrix Stratification, NumericVector LayerTemp, NumericVector LayerDensity, double LakeDepth, NumericVector Salinity, double LatitudeRadians){
+//I'm wondering if this should be called as a "helper" function from the main temp-profile function. Seems to be a lot of doubling up in terms of for loops.
+//calculation from Henderson-Sellers 1985 Applied Mathematical Modelling. cm corrected code for rad calculation in order to match Henderson-Sellers publication 2/4/2016.
+double ks; 
+double ws;
+double z;
+double Po = 1;
+double radmax = 40000;
+double Zhalf;
+double BruntVaisala; //N2
+double DensityDelta;
+double rad;
+double RichardsonNumber;
+//NumericVector EddyDiffusionRate(LakeDepth); //moved to Stratification
+//NumericVector Density(LakeDepth); //moved to Stratification
+
+// define density for each layer. (duplicated in temp_profile)
+for (int k = 0; k < LakeDepth; k++){
+	Density(k) = func_Density (LayerTemp(k), Salinity(k));
+}
+
+//initial diffusion values for each layer. 
+	if (LakeIceThickness == 0){ //no ice, so set diffusivity to water diffusivity as a starting point.
+		for (int k = 0; k < LakeDepth; k++){
+			EddyDiffusionRate(k) = 	DiffusivityWater;
+		}
+	}
+//*****************************************************
+//from Henderson Sellers 1985 eq16
+	if (Windspeed < 0.5){ //apparently here to stop ks = NAN
+		Windspeed = 0.5;
+	}
+ks = 6.6*sqrt(fabs(sin(LatitudeRadians))) * pow(Windspeed,1.84);
+ws = 0.0012 * Windspeed;
+
+	for (int k = 0;k < LakeDepth-1; k++){ //may need to be depth -1
+		if (k == 0){
+		Zhalf = (LayerThickness + SurfaceThickness)/2;
+		} else {
+		Zhalf = LayerThickness;
+		}
+		//Maybe eq 30 in Henderson Seller 1985.
+		DensityDelta = Density(k+1)-Density(k)/Zhalf; //check layers go right way
+		BruntVaisala = (DensityDelta/(1000 + Density(k)))*Gravity;
+		z = SurfaceThickness + k*LayerThickness;
+		if (z * ks/ws > 40) {
+			rad = radmax; // apparently to avoid a NAN.
+		} else {
+			rad = 1 + 40 *BruntVaisala * pow(VonKarman * z,2)/(pow(ws,2) * exp(-2*ks*z));
+			if (rad > radmax){
+				rad = radmax;
+			}
+		}
+		if (rad < 1){ // so RichardsonNumber lower limit = 0;
+			rad = 1; 
+		}
+		RichardsonNumber = (-1+sqrt(rad))/20; 
+		if ((ks*z/ws) > 40){
+			EddyDiffusionRate(k) = DiffusivityWater; //for upper layers
+		} else {
+			EddyDiffusionRate(k) = DiffusivityWater + VonKarman*ws*z*Po*exp(-ks*z)/(1+37*pow(RichardsonNumber,2));
+		}
+		EddyDiffusionRate(ceil(LakeDepth))  = DiffusivityWater; //bottom layers
+		EddyDiffusionRate(ceil(LakeDepth-1))  = EddyDiffusionRate(LakeDepth); //necessary for CN solution. Also need to check this. Almost certain to be an indexing problem in C++
+	}
+	return EddyDiffusionRate;
+}

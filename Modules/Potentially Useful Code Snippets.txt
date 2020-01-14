@@ -1,0 +1,11 @@
+RunningMatrixRownames <- function (type){
+if (type == "full"){
+	if (Datarate == "Monthly"){
+	RowNames <- list(c(rownames(Met),"Final" ))
+	}
+} elseif (type == "clean"){
+
+
+}
+}
+

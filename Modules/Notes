@@ -1,0 +1,390 @@
+How to call RCPP functions
+
+rm(list=ls())
+library(Rcpp)
+setwd("CHIMBLE 2/Modules")
+compileAttributes(pkgdir = "CHIMBLERcpp")
+system("R CMD build CHIMBLERcpp")
+system("R CMD install CHIMBLERcpp_1.0.tar.gz")
+library(CHIMBLERcpp)
+source('~/Dropbox/Martin Ankor shared folder/R Working Folder/CHIMBLE 2/Chimble 2.0.R', chdir = TRUE)
+
+source('~/Dropbox/Martin Ankor shared folder/R Working Folder/CHIMBLE 2/Chimble 2.0.R', chdir = TRUE)
+library(Rcpp)
+sourceCpp("Stratification.cpp")
+source('~/Dropbox/Martin Ankor shared folder/R Working Folder/CHIMBLE 2/Modules/Stratification Initialisation.r', chdir = TRUE)
+func_TempProfile (0, 161.1, 5520860, Stratification[9,8], 20, 10, 1020, 0.75, 0, 0, 40, 22.419355, -0.109955795, 10, Stratification)
+func_ConvectionMixing (Stratification, 161.1)
+Stratification[9:19,"Temp"]
+plot(Stratification[,"Temp"])
+
+for (i in 1:1000){
+func_TempProfile (0, 161.1, 5520860, Stratification[9,8], 20, 2.5, 1020, 0.75, 0, 0, 40, 22.419355, -0.109955795, 10, Stratification)
+func_ConvectionMixing (Stratification, 161.1)
+plot(y = Stratification[,"UpperDepth"],x = Stratification[,"Temp"])
+}
+func_ConvectionMixing (Stratification, 161.1)
+plot(y = Stratification[,"UpperDepth"],x = Stratification[,"Temp"])
+
+Time <- 7729
+for (i in 1:300){
+Counter <- Time + i
+func_RunStratification (Counter, Met, Lake, ChemConcentrations, Stratification, LatitudeRadians, NeutralDragCoeff, SWExtCoef, ThermoclineTargetThickness, ThermoclineMaximum, Feedback)
+plot(y = Stratification[,"UpperDepth"],x = Stratification[,"Temp"], type = "l", xlim=c(0,25))
+Sys.sleep(0.25)
+}
+
+plot(Met[10000:11000, "SL"], type = "l")
+
+For Timms comparison
+Met[7729:8032,]
+quartz(width = 12, height = 10)
+par(mfrow=c(2,1))
+plot(Met[7729:8032, "SL"], type = "l")
+temps <- (Met[7729:8032, "Ta"] + Met[7729:8032, "Toff"])
+plot(temps, type = "l")
+max(temps)
+min(temps)
+
+func_TempProfile (0, 147.2, 4841470, Stratification[23,8], 7.7, 2, 1020, 0.75, 0, 0, 40, 22.419355, -0.667, 10, Stratification, NeutralDragCoeff, SWExtCoef)
+func_ConvectionMixing (Stratification, 147.2)
+
+
+plot(Flux[,"Fgw"], type = "l", col = "blue", ylim = c(0,500000))
+lines(Flux[,"Fsos"], type = "l", col = "red")
+lines(Flux[,"Fsos"], type = "l", col = "black")
+
+GWNumbers
+Flux[nrow(Flux)-1,"Fgw"] - (Flux[nrow(Flux)-1,"Fsos"] + Flux[nrow(Flux)-1,"Fdos"])
+profplot(0,0)
+plot(Flux[9500:9552,"Fgw"], type = "l")
+
+
+plot (Chemistry[12000:12505,"RESsl_Cl"], type = "l")
+plot (1:nrow(Chemistry),Lake[,"Depth"], type = "l", main="Lake Cl- over time",xlab="Time", ylab="Depth", col = "blue", xaxt = 'n')
+axis (side = 1, at = Dates[,"Timestep"]/Timestep, labels = Dates[,"Year"])
+abline (v=Dates[,"Timestep"]/Timestep, col="grey", lwd = 0.5)
+abline (h=seq(ceiling(min(Lake[,"Depth"])),floor(max(Lake[,"Depth"])), 1) , col="grey83")
+lines(y = HistoricalLevelData$Height, x = HistoricalLevelData$RecordNumber)
+
+#chemistry dump
+ave(Chemistry[12200:12297,"RESsl_Na"])
+or
+sum(Chemistry[12200:12297,"RESsl_Na"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_Mg"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_Ca"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_K"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_Sr"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_Cl"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_SO4"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_HCO3"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_NO3"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_Br"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_C03"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESsl_TDS"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_Na"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_Mg"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_Ca"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_K"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_Sr"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_Cl"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_SO4"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_HCO3"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_NO3"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_Br"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_C03"])/(12297-12199)
+sum(Chemistry[12200:12297,"RESdl_TDS"])/(12297-12199)
+
+
+sourceCpp("Modules/Hypsographic_Calcs.cpp")
+func_Lakevolume(Depth, Lakevolumes)
+func_Lakearea(Volume, Lakevolumes)
+func_Lakedepth(Volume, Lakevolumes)#Scenarios
+#Scenarios are a way to run the model employing an override for a variable or dataset.
+#The idea is that for each scenario we  drop the scenario file onto R.
+#This opens and runs CHIMBLE while applying any modified variables included in the scenario.
+#This means multiple scenarios can be used, without changing any of the "default" files.
+#For each scenario we need: 
+#A subfolder defined to output files to. 
+#A quick function that can compare the variable we're loading with any variable in the scenario file.
+
+#First, retrieve the name of the scenario file
+ScenarioPath <- sys.calls()[[1]][[2]]
+ScenarioFile <- basename(ScenarioPath)
+ScenarioDir <- dirname (ScenarioPath)
+message ("Running CHIMBLE with scenario: ", ScenarioFile)
+setwd('..')
+temp <- getwd()
+message("Attempting to run Chimble 2.0, found at: ", temp)
+source("Chimble 2.0.R")
+
+sourceCpp("Modules/Hydrology_functions.cpp")
+func_CAe (CA, Lake, Time) 
+func_FpLake(Time, Met, Lake, Timestep)
+func_Fsm (CA, Time, Lake,Met, Isotopes, Datarate, Timestep)
+func_Fext (Time, Met, Isotopes, Timestep)
+func_FluxFgw (Topogrid, GWRechargegrid, GWPumpinggrid, GWKgrid, GWSgrid, GWbasegrid, GWheadgrid, GWboundarygrid, GWlakesedimentgrid, Lakecondgrid, GWETgrid, Classgrid, Timestep, ETexdepth, Cellxdim, Cellydim, Accuracy, Maxiterations, Time-1, Lake, GWcatchmentgrid, Lakevolumes, GWlakekgrid, Flux, LakeDepths, Csr, Met, Isotopes, GroundwaterModule, GWStats, GWNumbers);
+func_FpCatchment(Time, Met, CA, Lake, Timestep)
+CDaysInMonth(Month, Year)
+func_MonthFraction(Time, Met, Datarate, Timestep)
+//func_Ra(Time, LatitudeRadians, Met, Datarate, Timestep)
+func_Ra(Time, LatitudeRadians, Met)
+func_E(Time, Met, ALBlake, PWF, LatitudeRadians, Datarate, Timestep, ChemConcentrations, StratificationModule)
+func_PET(Time, Met, ALBearth, PWF, LatitudeRadians, Datarate, Timestep)
+func_Evap(CA, Time, Met, Lake,Isotopes, AWCss, AWCds, KcDS, LatitudeRadians, KcSS, ALBearth, ALBlake, Datarate, PWF, Timestep)
+func_Soil(Time, AWCss, AWCds, CA, Lake, Met, Isotopes, KcDS,  KcSS, LatitudeRadians,RunoffRatio, ALBearth, ALBlake, PWF, Datarate, Timestep)
+func_Fsf(CA, Lake, Time, Met, Timestep)
+func_Fin(CA, Lake, Time, Isotopes, Cin, Timestep)
+func_SVC(Time, Met, Lakevolumes, Lake, Interpolationtype)
+func_Fdlm(Time, Isotopes, Met, Lakevolumes, Lake, Interpolationtype)
+func_KcLake(Time, KcLwin, KcLsum, Met,Datarate, Timestep)
+func_Fe(Time, Timestep, Lake, Met, ALBlake, Isotopes, PWF, LatitudeRadians, Datarate, KcLwin, KcLsum,ChemConcentrations, StratificationModule, NeutralDragCoeff, Feedback)
+func_FeedbackRH(Met, Time, Feedback)
+func_Fof(Lake, Lakevolumes, Time)
+
+sourceCpp("Modules/Isotope_Calcs.cpp")
+func_dE(Time, Isotype, Isotopes, Met, AtmosphericShift, Turbulence, Feedback, Lakevolumes, Lake, Interpolationtype, ChemConcentrations, ThetaDefinition, DefinedTheta)
+RH_Normalised( Met, Time, Feedback, Act_Water, tLake)
+
+
+sourceCpp("Modules/Mass_Balance.cpp")
+StrSplitFront (StringToSplit, Delim)
+StrSplitBack (StringToSplit, Delim)
+func_FluxFpCatchment(Flux, Met, Time, CA, Lake, Timestep)
+func_FluxFpLake(Flux, Time, Met, Lake, Timestep)
+func_FluxFe (Flux, Time, Timestep, Lake, Met, ALBlake, Isotopes, PWF, LatitudeRadians, Datarate, KcLwin, KcLsum)
+func_FluxFsm (Flux, CA, Time, Lake,Met, Isotopes, Datarate, Timestep)
+func_FluxFext (Flux, Time, Met, Isotopes, Timestep)
+func_FluxFdlm (Flux, Time, Isotopes, Met, Lakevolumes, Lake, Interpolationtype)
+func_FluxSoil (Flux, Time, AWCss, AWCds, CA, Lake, Met, Isotopes, KcDS,  KcSS, LatitudeRadians,RunoffRatio, ALBearth, ALBlake, PWF, Datarate, Timestep)
+func_FluxSoilEvap (Flux, CA, Time, Met, Lake,Isotopes, AWCss, AWCds, KcDS, LatitudeRadians, KcSS, ALBearth, ALBlake, Datarate, PWF, Timestep)
+func_FluxFin (Flux, CA, Lake, Time, Isotopes, Cin, Timestep)
+func_FluxFsf (Flux, CA, Lake, Time, Met, Timestep)
+func_FluxFgw (Topogrid, GWRechargegrid, GWPumpinggrid, GWKgrid, GWSgrid, GWbasegrid, GWheadgrid, GWboundarygrid, GWlakesedimentgrid, Lakecondgrid, GWETgrid, Classgrid, Timestep, ETexdepth, Cellxdim, Cellydim, Accuracy, Maxiterations, Time, Lake, GWcatchmentgrid, Lakevolumes, GWlakekgrid, Flux, LakeDepths, Csr, Met, Isotopes, GroundwaterModule, GWStats, GWNumbers);
+func_FluxFof (Flux, Lake, Lakevolumes, Time)
+func_FluxE (Flux, Time, Met, ALBlake, PWF, LatitudeRadians, Datarate, Timestep)
+func_FluxPET (Flux, Time, Met, ALBearth, PWF, LatitudeRadians, Datarate, Timestep)
+func_Fluxes(KcSS, ALBearth, ALBlake, CA, Cin, Csr, KcDS, KcLsum, KcLwin, LatitudeRadians, RunoffRatio, PWF, Timestep, AWCds, AWCss, Time, Flux, Isotopes, Lake, Met, Lakevolumes, Datarate, Interpolationtype, GroundwaterModule, Topogrid, GWRechargegrid, GWPumpinggrid, GWKgrid, GWSgrid, GWbasegrid, GWheadgrid, GWboundarygrid, GWlakesedimentgrid, Lakecondgrid, GWETgrid, Classgrid, ETexdepth, Cellxdim, Cellydim, Accuracy, Maxiterations, GWcatchmentgrid, GWlakekgrid, LakeDepths, GWStats, GWNumbers)
+func_Hydrology(Flux, Lake, Isotopes, Time, Met, Lakevolumes, Interpolationtype, DirectExternalFlows, GroundwaterModule, GWStats)
+func_IsotopeFluxes (Flux, Time, Isotopes, Met, AtmosphericShift, Turbulence, Feedback, Lakevolumes, Lake, Interpolationtype, DirectExternalFlows, FluxD, Flux18O, GroundwaterModule, GWStats, GWNumbers)
+func_ChemistryFluxes (Chemistry, Time, Flux, Lake, Met, DirectExternalFlows, GroundwaterModule, GWStats, GWNumbers)
+func_LakeMixer (Flux, Lake, Chemistry, Isotopes, Time, Met, Lakevolumes, Interpolationtype, FluxD, Flux18O)
+MassBalance (KcSS, ALBearth, ALBlake, CA, Cin, Csr, KcDS, KcLsum, KcLwin, LatitudeRadians, RunoffRatio, PWF, Timestep, AWCds, AWCss, Time, Flux, Isotopes, Lake, Met, Lakevolumes, Datarate, Interpolationtype, GroundwaterModule, Topogrid, GWRechargegrid, GWPumpinggrid, GWKgrid, GWSgrid, GWbasegrid, GWheadgrid, GWboundarygrid, GWlakesedimentgrid, Lakecondgrid, GWETgrid, Classgrid, ETexdepth, Cellxdim, Cellydim, Accuracy, Maxiterations, GWcatchmentgrid, GWlakekgrid, LakeDepths, Chemistry, DirectExternalFlows, AtmosphericShift, Turbulence, Feedback, FluxD, Flux18O, GWStats, GWNumbers, ScenarioEventsList, ScenarioEvents, ChemConcentrations, ChemParams)EventChecker(Time, FindEvents)
+
+sourceCpp("Modules/ChimbleGW.cpp")
+func_ClassGrid(Time, Topogrid, Lake, GWcatchmentgrid, Classgrid, Lakevolumes)
+func_LakeConductance(Lakecondgrid, Cellxdim, Cellydim, GWlakesedimentgrid, GWlakekgrid)
+func_RechargeGrid (Time, Cellxdim, Cellydim, GWRechargegrid, Classgrid, Flux)
+func_ETGrid (Time, GWETgrid, Flux)
+func_LakeDepths(Lake, Time, LakeDepths)
+Headcalc(Topogrid, GWRechargegrid, GWPumpinggrid, GWKgrid, GWSgrid, GWbasegrid, GWheadgrid, GWboundarygrid, GWlakesedimentgrid, Lakecondgrid, GWETgrid, Classgrid, GWTimestep, GWRuntime, ETexdepth, LakeDepths, Cellxdim, Cellydim, Accuracy, Maxiterations, GWNumbers)
+
+sourceCpp("Modules/Salinity_Calcs.cpp")
+CalcMolarities(Time, Chemistry, ChemConcentrations)
+EstimateSaltMolarities(ChemConcentrations)
+CalcSalts(ChemConcentrations)
+CalcSaltDensity (ChemConcentrations, ChemParams)
+CalcWaterActivity (ChemConcentrations, ChemParams)
+SalinityCalcs (Time, ChemConcentrations, Chemistry, ChemParams)
+
+sourceCpp("Modules/Stratification.cpp")
+func_Density (LakeTemperature, Salinity)
+func_LakeDrag (LakeTemperature, AirTemperature, WindSpeed)
+func_LakeAlbedo (Julian)
+func_IceAlbedo (AirTemperature, FreezingTemp)
+func_SnowAlbedo (MeltFlag)
+func_OldDownwardLongwave(Ra, Rs, AirTemperature, WaterVaporPressure)
+func_DownwardLongwave(Time, LatitudeRadians, Met)
+func_LongWave (LakeIceThickness, WaterTemperature, TempIce, Ra, Rs, AirTemperature, RH, Met, Time, LatitudeRadians)
+func_LatSensHeat (LakeTemperature, AirTemperature, WindSpeed, LakeIceThickness, FreezingTemp, SurfacePressure, RH, NeutralDragCoeff)
+func_SpecificHeat (LakeTemperature, Salinity)
+TridiagSolver (NumSystems, Columns, NumUnknowns, SubdiagMatrix, MainDiagMatrix, SuperDiagMatrix, RHS)
+func_TempProfile (LakeIceThickness, LakeDepth, LakeSurfaceArea, LakeTemperature, AirTemperature, WindSpeed, SurfacePressure, RH, Salinity, TempIce, Ra, Rs, LatitudeRadians, Julian, Stratification, NeutralDragCoeff, SWExtCoef, Met, Time);
+func_ConvectionMixing (Stratification, LakeDepth)
+func_Interpolate(StartValue, EndValue, Days, CurrentDay)
+func_CleanAirAct (Stratification, LakeDepth)
+func_RunStratification (Time, Met, Lake, ChemConcentrations, Stratification, LatitudeRadians)
+
+for (i in 1:nrow(Stratification)){
+Stratification [i,12] = func_Density (Stratification [i,8] , Stratification [i,11])
+}
+
+Benching RCPP vs R
+ system.time (for (i in 1:100000){func.CAe(1)})
+   user  system elapsed 
+  2.720   0.029   2.754 
+> system.time (for (i in 1:100000){func_CAe(CA, Lake, Time)})
+   user  system elapsed 
+  0.363   0.028   0.393 
+  
+Lake
+0  Timestep
+1  Year
+2  Month
+3  Day
+4  Depth 
+5  Volume
+6  Area
+7  RESsl
+8  RESdl
+9  RESss
+10  RESds
+11  RESsp
+12  RESin
+13  GW
+
+Met
+0	Year
+1	Month
+2	Day
+3	P
+4	Ta
+5	RH
+6	Rs
+7	WS
+8	d18Op
+9	dDp
+10	Toff
+11	External Flows
+12	dEF18O
+13	dEFD
+14	Surface Pressure
+15	SL
+16	Groundwater
+17	d18Ogw
+18	dDgw
+19	Events
+
+Isotopes
+0	Timestep
+1	Year
+2	Month
+3	Day
+4	RESsl_D
+5	RESsl_18O
+6	RESdl_D
+7	RESdl_18O
+8	RESss_D
+9	RESss_18O
+10	RESds_D
+11	RESds_18O
+12	RESsp_D
+13	RESsp_18O
+14	RESin_D
+15	RESin_18O
+16	GW_D
+17	GW_18O
+18	E_D
+19	E_18O
+20	PET_18O
+21	PET_D
+
+Flux
+0	Timestep
+1	Year
+2	Month
+3	Day
+4	Fr
+5	Fp
+6	Fsm
+7	Fe
+8	Fsos
+9	Fdos
+10	Fdlm
+11	Fssi
+12	Fsse
+13	Fssd
+14	Fdse
+15	Fdsd
+16	Fro
+17	Fin
+18	Fsf
+19	Fgw
+20	Fext
+21	Fof
+22	GW_FHead
+23	GW_Ext
+24	GW_Recharge
+25	GW_ET
+26	E
+27	PET
+
+Chemistry
++1	RESdl
++2	RESss
++3	RESds
++4	RESsp
++5	RESin
++6	GW
++7	P
++8	Ext
++9	New Bank
+
+
+GWLakes
+Row	LakeID
+0	InitialDepth
+1	LakeDelta
+2	MinDepth
+3	CurrentDepth
+
+Stratification
+Row	ID
+0	LowerDepth
+1	UpperDepth
+2	Thickness
+3	PreviousTemp
+4	PreviousD
+5	Previous18O
+6	PreviousSalinity
+7	Temp
+8	D
+9	18O
+10	Salinity
+11	Density
+12	SpecHeat
+13	Diffusion
+14	Area at top of layer.
+
+library(Rcpp)
+#Rcpp.package.skeleton("CHIMBLERcpp", attributes = TRUE)
+compileAttributes(pkgdir = "CHIMBLERcpp")
+system("R CMD build CHIMBLERcpp")
+system("R CMD install CHIMBLERcpp_1.0.tar.gz")
+library(CHIMBLERcpp)
+
+detach("package:CHIMBLERcpp", unload=TRUE)
+
+
+Note
+// [[Rcpp::export]] cannot have a comment between this line and the function, or the build will fail.
+May need to delete the RCPP Exports files for each use of compileattributes.
+Also, give it a few seconds to complete the compile attributes. Don't run both compile and build together. 
+May need to restart R after rebuilding and installing the library.
+
+
+//Isotope mass at time -1
+for (int i=4; i < Isotopes.ncol(); i++){
+//Isotopes(Time-1,i) = 
+StringVector Isocolumns = colnames(Isotopes);
+
+Rcpp::Rcout << "Colname = " << Isocolumns(i) << std::endl;
+Rcpp::Rcout << "Length = " << Isocolumns(i).size() << std::endl;
+Rcpp::Rcout << "First part = " << Isocolumns(i)[0] << std::endl;
+}
+}
+
+Where speed improvements can be made.
+1) Move isotope calculations out of each hydrology function, and return just the hydrologic flux variable.
+
+options(max.print=2000) #Just to make it easy not to be overwhelmed by large matrixes and dataframes.
+FluxDF <- as.data.frame(Flux)
+open -n /Applications/R.app
+plot(Isotopes[,"RESsl_18O"])
+plot(Lake[,"Depth"])
+
+
+Notes:
+F_Head flux for groundwater includes the boundary cells and flows to and from the other lakes. 
+The Fdos, Fsos and Fgw fluxes are only to the lake of interest.
+Groundwater runs on a m3/day. Need to apply this to recharge, ET and any other rates.

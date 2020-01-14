@@ -1,0 +1,126 @@
+ChemTempNoGW <- matrix(ncol = 1,nrow = nrow(Met))
+for (i in 1:(nrow(NoGWchem)-1)){
+	if (Sampledepth >= Met[i,"SL"]){
+		ChemTempNoGW[i] <- NoGWchem[i, "RESdl_Na"]+NoGWchem[i, "RESdl_Mg"]+NoGWchem[i, "RESdl_Ca"]+NoGWchem[i, "RESdl_K"]+NoGWchem[i, "RESdl_Sr"]+NoGWchem[i, "RESdl_Cl"]+NoGWchem[i, "RESdl_SO4"]+NoGWchem[i, "RESdl_HCO3"]+NoGWchem[i, "RESdl_NO3"]+NoGWchem[i, "RESdl_Br"]+NoGWchem[i, "RESdl_CO3"]
+		if (ChemTempNoGW[i] == 0){
+		ChemTempNoGW[i] <- NoGWchem[i, "RESsl_Na"]+NoGWchem[i, "RESsl_Mg"]+NoGWchem[i, "RESsl_Ca"]+NoGWchem[i, "RESsl_K"]+NoGWchem[i, "RESsl_Sr"]+NoGWchem[i, "RESsl_Cl"]+NoGWchem[i, "RESsl_SO4"]+NoGWchem[i, "RESsl_HCO3"]+NoGWchem[i, "RESsl_NO3"]+NoGWchem[i, "RESsl_Br"]+NoGWchem[i, "RESsl_CO3"]
+		}
+	} else {
+		ChemTempNoGW[i] <- NoGWchem[i, "RESsl_Na"]+NoGWchem[i, "RESsl_Mg"]+NoGWchem[i, "RESsl_Ca"]+NoGWchem[i, "RESsl_K"]+NoGWchem[i, "RESsl_Sr"]+NoGWchem[i, "RESsl_Cl"]+NoGWchem[i, "RESsl_SO4"]+NoGWchem[i, "RESsl_HCO3"]+NoGWchem[i, "RESsl_NO3"]+NoGWchem[i, "RESsl_Br"]+NoGWchem[i, "RESsl_CO3"]	
+		if (ChemTempNoGW[i] == 0){
+		ChemTempNoGW[i] <- NoGWchem[i, "RESdl_Na"]+NoGWchem[i, "RESdl_Mg"]+NoGWchem[i, "RESdl_Ca"]+NoGWchem[i, "RESdl_K"]+NoGWchem[i, "RESdl_Sr"]+NoGWchem[i, "RESdl_Cl"]+NoGWchem[i, "RESdl_SO4"]+NoGWchem[i, "RESdl_HCO3"]+NoGWchem[i, "RESdl_NO3"]+NoGWchem[i, "RESdl_Br"]+NoGWchem[i, "RESdl_CO3"]
+		}
+	}
+}
+
+ChemTempNoGW[ChemTempNoGW == 0] <- NA
+ChemTempNoGW
+
+ChemTempStrat <- matrix(ncol = 1,nrow = nrow(Met))
+for (i in 1:(nrow(Chemstrat)-1)){
+	if (Sampledepth >= Met[i,"SL"]){
+		ChemTempStrat[i] <- Chemstrat[i, "RESdl_Na"]+Chemstrat[i, "RESdl_Mg"]+Chemstrat[i, "RESdl_Ca"]+Chemstrat[i, "RESdl_K"]+Chemstrat[i, "RESdl_Sr"]+Chemstrat[i, "RESdl_Cl"]+Chemstrat[i, "RESdl_SO4"]+Chemstrat[i, "RESdl_HCO3"]+Chemstrat[i, "RESdl_NO3"]+Chemstrat[i, "RESdl_Br"]+Chemstrat[i, "RESdl_CO3"]
+	} else {
+		ChemTempStrat[i] <- Chemstrat[i, "RESsl_Na"]+Chemstrat[i, "RESsl_Mg"]+Chemstrat[i, "RESsl_Ca"]+Chemstrat[i, "RESsl_K"]+Chemstrat[i, "RESsl_Sr"]+Chemstrat[i, "RESsl_Cl"]+Chemstrat[i, "RESsl_SO4"]+Chemstrat[i, "RESsl_HCO3"]+Chemstrat[i, "RESsl_NO3"]+Chemstrat[i, "RESsl_Br"]+Chemstrat[i, "RESsl_CO3"]
+	}
+}
+ChemTempStrat[ChemTempStrat == 0] <- NA
+
+#Gnotuk
+HistChemplot <- function (HistoricalChemData) {
+quartz(width = 6, height = 5)
+ChemTemp <- matrix(ncol = 1,nrow = nrow(Met))
+#Need to redo this to use the available ions/tds, rather than hardcoded.
+for (i in 1:(nrow(Chemistry)-1)){
+	if (Sampledepth >= Met[i,"SL"]){
+		ChemTemp[i] <- Chemistry[i, "RESdl_Na"]+Chemistry[i, "RESdl_Mg"]+Chemistry[i, "RESdl_Ca"]+Chemistry[i, "RESdl_K"]+Chemistry[i, "RESdl_Sr"]+Chemistry[i, "RESdl_Cl"]+Chemistry[i, "RESdl_SO4"]+Chemistry[i, "RESdl_HCO3"]+Chemistry[i, "RESdl_NO3"]+Chemistry[i, "RESdl_Br"]+Chemistry[i, "RESdl_CO3"]
+	} else {
+		ChemTemp[i] <- Chemistry[i, "RESsl_Na"]+Chemistry[i, "RESsl_Mg"]+Chemistry[i, "RESsl_Ca"]+Chemistry[i, "RESsl_K"]+Chemistry[i, "RESsl_Sr"]+Chemistry[i, "RESsl_Cl"]+Chemistry[i, "RESsl_SO4"]+Chemistry[i, "RESsl_HCO3"]+Chemistry[i, "RESsl_NO3"]+Chemistry[i, "RESsl_Br"]+Chemistry[i, "RESsl_CO3"]
+	}
+}
+
+minplot <-1#min(HistoricalChemData$RecordNumber)# 11200#
+maxplot <- nrow(Chemistry)#(max(HistoricalChemData$RecordNumber)
+minyplot <- 30000#min(HistoricalChemData$TDS)-5000
+maxyplot <- 80000#max(HistoricalChemData$TDS)+5000
+plot (1:nrow(ChemTemp),ChemTemp, type = "l", main="Lake TDS over time",xlab="Time", ylab="TDS", col = "blue", xaxt = 'n',xlim=c(minplot,maxplot), ylim =c(minyplot,maxyplot))
+axis (side = 1, at = Dates[,"Timestep"]/Timestep, labels = Dates[,"Year"])
+abline (v=Dates[,"Timestep"]/Timestep, col="grey", lwd = 0.5)
+
+if (floor(max(ChemTemp)) > 10000){
+MaxChem <- signif(floor(max(ChemTemp)), digits = 1)+10000
+MinChem <- signif(ceiling(min(ChemTemp)), digits = 1)-10000
+} else {
+MaxChem <- signif(floor(max(ChemTemp)), digits = 2)+2000
+MinChem <- signif(ceiling(min(ChemTemp)), digit = 2)-2000
+}
+message (MinChem, ", ",MaxChem)
+abline (h=seq(MinChem,MaxChem, 10000), col="grey83")
+z <- nrow(HistoricalChemData)#14
+lines(y = HistoricalChemData$TDS[z:nrow(HistoricalChemData)], x = HistoricalChemData$RecordNumber[z:nrow(HistoricalChemData)])
+points(y = HistoricalChemData$TDS[1:z], x = HistoricalChemData$RecordNumber[1:z], cex = 0.5)
+lines (1:nrow(ChemTemp), ChemTemp, lwd = 1.5, col = "blue")
+lines (1:nrow(ChemTempNoGW), ChemTempNoGW, lwd = 1.5, col = "chartreuse4")
+} #end if
+
+
+#BM
+HistChemplot <- function (HistoricalChemData) {
+quartz(width = 6, height = 5)
+ChemTemp <- matrix(ncol = 1,nrow = nrow(Met))
+#Need to redo this to use the available ions/tds, rather than hardcoded.
+for (i in 1:(nrow(Chemistry)-1)){
+	if (Sampledepth >= Met[i,"SL"]){
+		ChemTemp[i] <- Chemistry[i, "RESdl_Na"]+Chemistry[i, "RESdl_Mg"]+Chemistry[i, "RESdl_Ca"]+Chemistry[i, "RESdl_K"]+Chemistry[i, "RESdl_Sr"]+Chemistry[i, "RESdl_Cl"]+Chemistry[i, "RESdl_SO4"]+Chemistry[i, "RESdl_HCO3"]+Chemistry[i, "RESdl_NO3"]+Chemistry[i, "RESdl_Br"]+Chemistry[i, "RESdl_CO3"]
+	} else {
+		ChemTemp[i] <- Chemistry[i, "RESsl_Na"]+Chemistry[i, "RESsl_Mg"]+Chemistry[i, "RESsl_Ca"]+Chemistry[i, "RESsl_K"]+Chemistry[i, "RESsl_Sr"]+Chemistry[i, "RESsl_Cl"]+Chemistry[i, "RESsl_SO4"]+Chemistry[i, "RESsl_HCO3"]+Chemistry[i, "RESsl_NO3"]+Chemistry[i, "RESsl_Br"]+Chemistry[i, "RESsl_CO3"]
+	}
+}
+
+minplot <- 11200#1#min(HistoricalChemData$RecordNumber)
+maxplot <- nrow(Chemistry)#(max(HistoricalChemData$RecordNumber)
+minyplot <- 8000#min(HistoricalChemData$TDS)-100
+maxyplot <- 10000#max(HistoricalChemData$TDS)+100
+plot (1:nrow(ChemTemp),ChemTemp, type = "l", main="Lake TDS over time",xlab="Time", ylab="TDS", col = "blue", xaxt = 'n',xlim=c(minplot,maxplot), ylim =c(minyplot,maxyplot))
+axis (side = 1, at = Dates[,"Timestep"]/Timestep, labels = Dates[,"Year"])
+abline (v=Dates[,"Timestep"]/Timestep, col="grey", lwd = 0.5)
+
+if (floor(max(ChemTemp)) > 10000){
+MaxChem <- signif(floor(max(ChemTemp)), digits = 1)+1000
+MinChem <- signif(ceiling(min(ChemTemp)), digits = 1)-1000
+} else {
+MaxChem <- signif(floor(max(ChemTemp)), digits = 2)+2000
+MinChem <- signif(ceiling(min(ChemTemp)), digit = 2)-2000
+}
+message (MinChem, ", ",MaxChem)
+abline (h=seq(MinChem,MaxChem, 1000), col="grey83")
+z <- nrow(HistoricalChemData)#14
+lines(y = HistoricalChemData$TDS[z:nrow(HistoricalChemData)], x = HistoricalChemData$RecordNumber[z:nrow(HistoricalChemData)])
+points(y = HistoricalChemData$TDS[1:z], x = HistoricalChemData$RecordNumber[1:z], cex = 0.5)
+#lines (1:nrow(ChemTemp), ChemTemp, lwd = 1.5, col = "blue")
+lines (1:nrow(ChemTempNoGW), ChemTempNoGW, lwd = 1.5, col = "chartreuse4")
+lines (1:nrow(ChemTempStrat), ChemTempStrat, lwd = 1.5, col = "red")
+lines (1:nrow(ChemTemp), ChemTemp, lwd = 1.5, col = "blue")
+
+
+} #end if
+
+
+StratIsoTemp <- matrix(ncol = 2,nrow = nrow(Met))
+for (i in 1:(nrow(Isotopes)-1)){
+	if (Sampledepth >= Met[i,"SL"]){
+		StratIsoTemp[i,1] <- Isostrat[i, "RESdl_18O"]
+		StratIsoTemp[i,2] <- Isostrat[i, "RESdl_D"]
+	} else {
+		StratIsoTemp[i,1] <- Isostrat[i, "RESsl_18O"]
+		StratIsoTemp[i,2] <- Isostrat[i, "RESsl_D"]
+	}
+}
+
+lines(1:nrow(StratIsoTemp), StratIsoTemp[,2], col = "red", lwd = 1.5)
+
+
+	SplineData <- data.frame(x = 1:nrow(StratIsoTemp), y = StratIsoTemp[,1])
+	#SplineData <- na.omit(SplineData)
+	Spline <-  smooth.spline(SplineData, spar=0.01)
+	lines(SplineData, lwd = 1.5, col = "black", lty = 2)
